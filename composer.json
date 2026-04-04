@@ -1,0 +1,54 @@
+{
+    "name": "avraapi/laravel-sdk",
+    "description": "Official Laravel integration package for the AvraAPI (APIX) enterprise API gateway. Provides a Service Provider, Facade, and config file for seamless Laravel 10/11/12 integration.",
+    "version": "1.0.0",
+    "type": "library",
+    "keywords": ["apix", "avraapi", "laravel", "sms", "pdf", "qr", "barcode", "sdk", "api-gateway", "facade"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fidex Developers (Pvt) Ltd",
+            "email": "dev@fidex.lk",
+            "homepage": "https://avraapi.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "avraapi/php-sdk": "^1.0" 
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.0",
+        "phpstan/phpstan": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Avraapi\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Avraapi\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Avraapi\\Laravel\\AvraApiServiceProvider"
+            ],
+            "aliases": {
+                "AvraAPI": "Avraapi\\Laravel\\Facades\\AvraAPI"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "1.0-dev"
+        }
+    }
+}
