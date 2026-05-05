@@ -135,13 +135,39 @@ use Illuminate\Support\Facades\Facade;
  *
  * Usage: AvraAPI::utilities()->generateBarcode('APIX-2026', type: 'C128')->saveAs('/tmp/bc.png');
  *
- * ── Utilities Service: generatePdf ────────────────────────────────────────────
+ * ── Utilities Service: generatePdf ────────────────────────────────────────
  *
  * Converts HTML to PDF. Returns BinaryResponse for 'binary' response_type (default),
  * ApiResponse for 'base64' response_type (JSON with data and media_type keys).
  *
- * Binary usage:   AvraAPI::utilities()->generatePdf('<h1>Invoice</h1>')->saveAs('/tmp/inv.pdf');
- * Base64 usage:   AvraAPI::utilities()->generatePdf('...', responseType: 'base64')->data['data']
+ * Now supports Base64 input mode via `isBase64: true` and privacy mode via `privacyMode: true`.
+ *
+ * Binary usage:       AvraAPI::utilities()->generatePdf('<h1>Invoice</h1>')->saveAs('/tmp/inv.pdf');
+ * Base64 input:       AvraAPI::utilities()->generatePdf(base64_encode($html), isBase64: true)->saveAs('/tmp/inv.pdf');
+ * Base64 response:    AvraAPI::utilities()->generatePdf('...', responseType: 'base64')->data['data']
+ * Privacy mode:       AvraAPI::utilities()->generatePdf($html, privacyMode: true)->saveAs('/tmp/inv.pdf');
+ *
+ * ── Utilities Service: generatePdfFromBase64 ────────────────────────────
+ *
+ * Convenience wrapper that auto-encodes raw HTML to Base64 before sending.
+ * Recommended for complex templates (invoices, reports with inline CSS)
+ * to avoid JSON escaping issues with quotes, newlines, and special characters.
+ *
+ * The method accepts raw HTML — encoding is handled internally by the SDK.
+ * The 512 KB size limit applies to the decoded HTML, not the encoded payload.
+ *
+ * Usage:
+ *   $html = file_get_contents(resource_path('templates/invoice.html'));
+ *   AvraAPI::utilities()->generatePdfFromBase64($html)->saveAs('/tmp/invoice.pdf');
+ *
+ *   // With options:
+ *   AvraAPI::utilities()->generatePdfFromBase64(
+ *       html:        $html,
+ *       pageSize:    'Letter',
+ *       orientation: 'landscape',
+ *       margins:     ['top' => 15, 'right' => 20, 'bottom' => 15, 'left' => 20],
+ *       privacyMode: true,
+ *   )->saveAs(storage_path('app/invoices/inv-001.pdf'));
  *
  * ── Exceptions thrown by the underlying SDK ───────────────────────────────────
  *
