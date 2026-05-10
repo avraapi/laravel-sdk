@@ -8,7 +8,9 @@ namespace Avraapi\Laravel\Facades;
 
 use Avraapi\Apix\Responses\ApiResponse;
 use Avraapi\Apix\Responses\BinaryResponse;
+use Avraapi\Apix\Services\CurrencyService;
 use Avraapi\Apix\Services\LocationService;
+use Avraapi\Apix\Services\SecurityService;
 use Avraapi\Apix\Services\SmsService;
 use Avraapi\Apix\Services\UtilitiesService;
 use Illuminate\Support\Facades\Facade;
@@ -62,10 +64,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static LocationService  location()  Access the Location service group (IP geolocation).
  * @method static SmsService       sms()       Access the SMS service group (messaging & balance).
  * @method static UtilitiesService utilities() Access the Utilities service group (QR, barcode, PDF).
+ * @method static SecurityService  security()  Access the Security service group (VPN Shield, Burner Email).
+ * @method static CurrencyService  currency()  Access the Currency service group (rates & conversion).
  *
  * ── Universal Call ────────────────────────────────────────────────────────────
  *
- * @method static ApiResponse|BinaryResponse call(string $method, string $path, array $payload = []) Make a raw call to any APIX endpoint. Accepts any path format — full URL, /api/v1/... prefix, or bare path. Only 'POST' dispatches; others throw InvalidArgumentException.
+ * @method static ApiResponse|BinaryResponse call(string $method, string $path, array $payload = []) Make a raw call to any APIX endpoint. Accepts any path format — full URL, /api/v1/... prefix, or bare path. Supports GET and POST.
  *
  * ── Location Service: lookupIp ────────────────────────────────────────────────
  *
@@ -168,6 +172,65 @@ use Illuminate\Support\Facades\Facade;
  *       margins:     ['top' => 15, 'right' => 20, 'bottom' => 15, 'left' => 20],
  *       privacyMode: true,
  *   )->saveAs(storage_path('app/invoices/inv-001.pdf'));
+ *
+ * ── Security Service: checkVpn ──────────────────────────────────────────────
+ *
+ * Checks whether an IP is a VPN, proxy, Tor node, relay, or hosting/datacenter.
+ * Returns ApiResponse with boolean flags and geo/network metadata.
+ *
+ * Usage: AvraAPI::security()->checkVpn('8.8.8.8')->data['is_vpn']
+ *
+ * Response data keys:
+ *   ->data['ip_address']    — The analysed IP
+ *   ->data['is_vpn']        — bool
+ *   ->data['is_proxy']      — bool
+ *   ->data['is_tor']        — bool
+ *   ->data['is_relay']      — bool (iCloud Private Relay)
+ *   ->data['is_hosting']    — bool (datacenter IP)
+ *   ->data['country_code']  — ISO 3166-1 alpha-2
+ *   ->data['city']          — nullable string
+ *   ->data['asn']           — Autonomous System Number
+ *   ->data['network_name']  — ISP / organization name
+ *   ->data['provider_name'] — 'vpnapi' or 'iplocate'
+ *
+ * ── Security Service: checkBurnerEmail ──────────────────────────────────────
+ *
+ * Detects temporary/disposable email domains using dual-list Redis lookup.
+ * Sub-millisecond response times.
+ *
+ * Usage: AvraAPI::security()->checkBurnerEmail('test@mailinator.com')->data['is_disposable']
+ *
+ * Response data keys:
+ *   ->data['email']             — The checked email
+ *   ->data['domain']            — Extracted domain (lowercase)
+ *   ->data['is_valid_syntax']   — RFC 5322 compliance
+ *   ->data['is_disposable']     — bool
+ *   ->data['source']            — 'custom', 'global', or 'none'
+ *   ->data['execution_time_ms'] — float (ms)
+ *
+ * ── Currency Service: getCodes ──────────────────────────────────────────────
+ *
+ * Returns all active ISO 4217 currency codes and names.
+ *
+ * Usage: AvraAPI::currency()->getCodes()->data['codes']
+ *
+ * ── Currency Service: getLatestRates ────────────────────────────────────────
+ *
+ * Returns all conversion rates from a given base currency.
+ *
+ * Usage: AvraAPI::currency()->getLatestRates('USD')->data['rates']['EUR']
+ *
+ * ── Currency Service: getPairRate ───────────────────────────────────────────
+ *
+ * Returns the exchange rate between two specific currencies.
+ *
+ * Usage: AvraAPI::currency()->getPairRate('USD', 'EUR')->data['rate']
+ *
+ * ── Currency Service: convert ───────────────────────────────────────────────
+ *
+ * Converts an amount from one currency to another.
+ *
+ * Usage: AvraAPI::currency()->convert('USD', 'LKR', 100.00)->data['conversion_result']
  *
  * ── Exceptions thrown by the underlying SDK ───────────────────────────────────
  *
