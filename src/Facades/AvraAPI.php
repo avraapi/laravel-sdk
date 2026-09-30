@@ -8,6 +8,7 @@ namespace Avraapi\Laravel\Facades;
 
 use Avraapi\Apix\Responses\ApiResponse;
 use Avraapi\Apix\Responses\BinaryResponse;
+use Avraapi\Apix\Services\PaymentService;
 use Avraapi\Apix\Services\CurrencyService;
 use Avraapi\Apix\Services\LocationService;
 use Avraapi\Apix\Services\SecurityService;
@@ -66,6 +67,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static UtilitiesService utilities() Access the Utilities service group (QR, barcode, PDF).
  * @method static SecurityService  security()  Access the Security service group (VPN Shield, Burner Email).
  * @method static CurrencyService  currency()  Access the Currency service group (rates & conversion).
+ * @method static PaymentService   payment()   Access the server-side Universal Payment Gateway service.
  *
  * ── Universal Call ────────────────────────────────────────────────────────────
  *

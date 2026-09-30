@@ -1,7 +1,7 @@
 {
     "name": "avraapi/laravel-sdk",
     "description": "Official Laravel integration package for the AvraAPI (APIX) enterprise API gateway. Provides a Service Provider, Facade, and config file for seamless Laravel 10/11/12 integration.",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "type": "library",
     "keywords": ["apix", "avraapi", "laravel", "sms", "pdf", "qr", "barcode", "sdk", "api-gateway", "facade"],
     "license": "MIT",
@@ -15,7 +15,7 @@
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0|^11.0|^12.0",
-        "avraapi/php-sdk": "^1.0" 
+        "avraapi/php-sdk": "^1.5.2"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0|^9.0|^10.0",
@@ -38,6 +38,10 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse"
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -48,7 +52,7 @@
             }
         },
         "branch-alias": {
-            "dev-main": "1.0-dev"
+            "dev-main": "1.2-dev"
         }
     }
 }
